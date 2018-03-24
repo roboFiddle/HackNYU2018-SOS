@@ -1,4 +1,5 @@
 import sys, os, json
+from time import asctime
 
 class User(object):
     '''
@@ -32,8 +33,9 @@ class User(object):
     # Med is medication objects
     def addMed(self, Med):
         self.medications.append(Med)
-    def calcAge(self):
-        pass
+    def calcAge(birthdate):
+        today = date.today()
+        return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
@@ -62,3 +64,40 @@ class Medication(object):
 
     def calcTimeToIngestion(self):
         pass
+
+
+class Test(object):
+    '''
+    dt = date of test
+    drNm = name of doctor
+    typ = type of test
+    rslt = result of test
+    extra = extra information
+    app = appointment test happenned
+    '''
+    def __init__(self, id, dt, drNm, typ, rslt, extra, app):
+        self.ID = id
+        self.Date = dt
+        self.DRName = drNm
+        self.TestType = typ
+        self.TestResult = rslt
+        self.ExtraInfo = extra
+        self.Appoint = app
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
+class Appointment(object):
+    '''
+    dt = date of app
+
+
+    '''
+    def __init__(self, id, dt, rs, doc, typ, extra):
+        self.ID = id
+        self.Date = dt
+        self.Doctor = doc
+        self.Results = rs
+        self.Type = typ
+        self.ExtraInfo = extra
