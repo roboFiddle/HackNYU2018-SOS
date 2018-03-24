@@ -35,12 +35,24 @@ def getinfo():
             assert db.cangetinfo(request.form['userid'], request.form['infoforuserid'])
         usermodel = db.getUserData(request.form['userid'])
         return Flask.jsonify(usermodel)
+
 @app.route('addappointment')
 def addappointment():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
         assert db.getUserType(request.form['userid']) == 1
+        db.insertAppointment(request.form['appointmentid'], request.form['patientid'], request.form['doctorid'],
+                             request.form['date'], request.form['type'], request.form['reason'], request.form['results'],
+                             request.form['extradetails'], request.form['privatenotes'])
+
 @app.route('addtest')
+def addtest():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        db.insertTest(request.form['testid'], request.form['doctorid'], request.form['patientid'], request.form['type'],
+                      request.form['date'], request.form['result'], request.form['privatenotes'], request.form['appid'])
+
+
 @app.route('addmedication')
 def addmedication():
     if request.method == 'POST':
@@ -48,12 +60,12 @@ def addmedication():
         db.insertMedication(request.form['medid'], request.form['userid'], request.form['medtype'], request.form['dosage'],
                             request.form['dosageunits'], request.form['frequency'], request.form['frequencyunit'])
 
-@app.route('adddoctorshare'):
+@app.route('adddoctorshare')
 def adddoctorshare():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
-        db.insertMedication(request.form['userid'], request.form['useremail'], request.form['userpassword_salt'],
-                            request.form['userpasssword_hash'], 1, request.form['userbirthday'], request.form['bloodtype'],
+        db.insertDoctor(request.form['userid'], request.form['useremail'], request.form['userpassword_salt'],
+                            request.form['userpasssword_hash'], 1, None, None,
                             None, None, request.form['doctortype'])
 
 
