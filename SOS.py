@@ -32,12 +32,6 @@ def getinfo():
             assert db.cangetinfo(request.form['userid'], request.form['infoforuserid'])
         usermodel = db.getUserData(request.form['userid'])
         return Flask.jsonify(usermodel)
-@app.route('addappointment')
-def addappointment():
-    if request.method == 'POST':
-        assert db.confirmtoken(request.form['userid'], request.form['token'])
-        assert db.getUserType(request.form['userid']) == 1
-@app.route('addtest')
 @app.route('addmedication')
 @app.route('adddoctorshare')
 @app.route('logemergency')
