@@ -23,3 +23,6 @@ class User(object):
     # Med is medication objects
     def addMed(self, Med):
         self.medications.append(Med)
+
+
+class Medication
