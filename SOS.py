@@ -3,6 +3,9 @@ import hashlib
 import random
 import DatabaseHandler
 
+from time import time
+
+
 app = Flask(__name__)
 db = DatabaseHandler()
 
@@ -39,9 +42,32 @@ def addappointment():
         assert db.getUserType(request.form['userid']) == 1
 @app.route('addtest')
 @app.route('addmedication')
-@app.route('adddoctorshare')
+def addmedication():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        db.insertMedication(request.form['medid'], request.form['userid'], request.form['medtype'], request.form['dosage'],
+                            request.form['dosageunits'], request.form['frequency'], request.form['frequencyunit'])
+
+@app.route('adddoctorshare'):
+def adddoctorshare():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        db.insertMedication(request.form['userid'], request.form['useremail'], request.form['userpassword_salt'],
+                            request.form['userpasssword_hash'], 1, request.form['userbirthday'], request.form['bloodtype'],
+                            None, None, request.form['doctortype'])
+
+
 @app.route('logemergency')
+def logemergency():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        db.insertEmergency((request.form['userid']), time(), request.form['latitude'], request.form['longitude'])
+'''
 @app.route('arriveemergency')
+def arriveemergency():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+'''
 
 
 
