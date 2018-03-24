@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import hashlib
 import random
 import DatabaseHandler
+import contact
 
 from time import time
 
@@ -73,7 +74,13 @@ def adddoctorshare():
 def logemergency():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
-        db.insertEmergency((request.form['userid']), time(), request.form['latitude'], request.form['longitude'])
+        userid = request.form['userid']
+        t = time()
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
+        db.insertEmergency(userid, t, latitude, longitude)
+        contact.sendMessage(toStr(getinfo()))
+
 '''
 @app.route('arriveemergency')
 def arriveemergency():
@@ -85,3 +92,7 @@ def arriveemergency():
 
 if __name__ == '__main__':
     app.run()
+
+#for json info that is prodiced by getInfo()
+def toStr(s):
+    str(s)

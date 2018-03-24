@@ -14,8 +14,6 @@ fromPhone = '+14697784122'
 
 #message is the body of the text
 def sendMessage(message):
-    client.messages.create(body = message, to = testnumber,
-                           from_ = fromPhone)
+    client.messages.create(body=message, to=testnumber,
+                           from_=fromPhone)
 
-def genMessage():
-    pass
