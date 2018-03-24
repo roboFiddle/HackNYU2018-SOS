@@ -1,21 +1,49 @@
 from flask import Flask, request, jsonify
-import flask_sqlalchemy
+import hashlib
+import random
+import DatabaseHandler
 
 app = Flask(__name__)
-
+db = DatabaseHandler()
 
 @app.route('schema.sql', methods = ['GET'])
-def api_poll():
-    if request.method == "GET":
-        # query the db and return all the polls as json
-        all_polls = {}
+@app.route('login')
+def login():
+    if request.method == 'POST':
+        loginrequest = db.login(request.form['username'],request.form['password'])
+        token = hashlib.md5(str(random.random()).encode('utf-8')).hexdigest()
+        db.setauthtoken(loginrequest.ID, token)
+        if loginrequest.success:
+            return Flask.jsonify( {"success": 1, "error": None, "userid": loginrequest.ID, "userType": loginrequest.type, "realName": loginrequest.name, "token": token})
+        else:
+            return Flask.jsonify(
+                {"success": 0, "error": "Invalid Username or Password", "userID": -1, "userType": -1})
+@app.route('logout')
+def logout():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        db.logout(request.form['userid'])
 
-        # get all the topics in the database
-        #topics = Topics.query.all()
-        for topic in topics:
-            # for each topic get the all options that are associated with it
-            all_polls[topic.title] = {'options': [poll.option.name for poll in Polls.query.filter_by(topic=topic)]}
-        return jsonify(all_polls)
+@app.route('getinfo')
+def getinfo():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        if request.form['infoforuserid'] != request.form['userid']:
+            assert db.cangetinfo(request.form['userid'], request.form['infoforuserid'])
+        usermodel = db.getUserData(request.form['userid'])
+        return Flask.jsonify(usermodel)
+@app.route('addappointment')
+def addappointment():
+    if request.method == 'POST':
+        assert db.confirmtoken(request.form['userid'], request.form['token'])
+        assert db.getUserType(request.form['userid']) == 1
+@app.route('addtest')
+@app.route('addmedication')
+@app.route('adddoctorshare')
+@app.route('logemergency')
+@app.route('arriveemergency')
+
+
 
 if __name__ == '__main__':
     app.run()
