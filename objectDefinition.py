@@ -1,10 +1,11 @@
 import sys, os, json
-from time import asctime
+from datetime import date
 
 class User(object):
     '''
     id = int
-    n = name, ty = type of user(0, 1, 2) -- int, em = email, birth = birthdate -- int, h = height -- double, w = weight -- double,
+    n = name, ty = type of user(0, 1, 2) -- int, em = email, birth = birthdate -- int, h = height -- double,
+    w = weight -- double,
     al = list of strings for allergies, bloTy = bloodtype, medCond = list of strings, gen = gender -- binary
     syst = systole bp, dias = diastole bp
     emgCont = emergency Contact, emgContNum = phone number of emg contact
