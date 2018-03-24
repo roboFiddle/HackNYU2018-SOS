@@ -24,13 +24,13 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 SET @@GLOBAL.GTID_PURGED='d0dc6914-2f19-11e8-a525-42010a8e0082:1-6023';
 
 --
--- Table structure for table `appoinments`
+-- Table structure for table `appointments`
 --
 
-DROP TABLE IF EXISTS `appoinments`;
+DROP TABLE IF EXISTS `appointments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `appoinments` (
+CREATE TABLE `appointments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `patientID` int(11) DEFAULT NULL,
   `doctorID` int(11) DEFAULT NULL,
@@ -41,8 +41,8 @@ CREATE TABLE `appoinments` (
   `extradetails` text,
   `privatenotes` text,
   PRIMARY KEY (`id`),
-  KEY `IDX_appoinments_patientID` (`patientID`),
-  KEY `IDX_appoinments_doctorID` (`doctorID`)
+  KEY `IDX_appointments_patientID` (`patientID`),
+  KEY `IDX_appointments_doctorID` (`doctorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

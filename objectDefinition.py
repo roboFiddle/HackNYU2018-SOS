@@ -6,8 +6,10 @@ class User(object):
     id = int
     n = name, ty = type of user(0, 1, 2) -- int, em = email, birth = birthdate -- int, h = height -- double, w = weight -- double,
     al = list of strings for allergies, bloTy = bloodtype, medCond = list of strings, gen = gender -- binary
+    syst = systole bp, dias = diastole bp
+    emgCont = emergency Contact, emgContNum = phone number of emg contact
     '''
-    def __init__(self, id, n, ty, em, birth, h, w, al, bloTy, medCond, gen, syst, dias):
+    def __init__(self, id, n, ty, em, birth, h, w, al, bloTy, medCond, gen, syst, dias, emgCont, emgContNum):
         self.ID = id
         self.Name = n
         self.UsrType = ty
@@ -21,6 +23,8 @@ class User(object):
         self.Gender = gen
         self.Systole = syst
         self.Diastole = dias
+        self.EmergencyContact = emgCont
+        self.EmergencyContactPhone = emgContNum
 
         #list of Ids
         self.appointments = []
@@ -91,13 +95,26 @@ class Test(object):
 class Appointment(object):
     '''
     dt = date of app
-
-
+    patient = id of the client
+    dt = date
+    rea = reason for appointment
+    rs = results of app
+    doc = doctor id
+    typ = type of appointment
+    extra = extrainfo
+    priv = privaet info
     '''
-    def __init__(self, id, dt, rs, doc, typ, extra):
+    def __init__(self, id, patient, dt, rea , rs, doc, typ, extra, priv):
         self.ID = id
         self.Date = dt
+        self.Patient = patient
         self.Doctor = doc
+        self.Reason = rea
         self.Results = rs
         self.Type = typ
         self.ExtraInfo = extra
+        self.PrivateNotes = priv
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
