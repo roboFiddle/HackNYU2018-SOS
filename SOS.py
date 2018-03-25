@@ -1,14 +1,14 @@
 from flask import Flask, request, jsonify
 import hashlib
 import random
-import DatabaseHandler
+from DatabaseHandler import *
 import contact
 
 from time import time
 
 
 app = Flask(__name__)
-db = DatabaseHandler()
+db = DBH()
 
 @app.route('schema.sql', methods = ['GET'])
 @app.route('login')
