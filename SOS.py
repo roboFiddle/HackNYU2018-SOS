@@ -4,6 +4,7 @@ import random
 from DatabaseHandler import *
 import contact
 import json
+import os
 
 import datetime
 
@@ -55,7 +56,7 @@ def logemergency():
         latitude = request.form['latitude']
         longitude = request.form['longitude']
         db.insertEmergency(userid, t, latitude, longitude)
-        contact.sendMessage(str(db.getUserData(request.form['userid'])))
+        contact.sendMessage(jsonToStr(str(db.getUserData(request.form['userid']))))
     return ""
 
 '''
@@ -71,3 +72,14 @@ if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=80)
 
 #for json info that is prodiced by getInfo()
+def jsonToStr(s):
+    s = s[1:-1].split(",")
+    #to return
+    a = ""
+    for i in s:
+        if ":" not in i:
+            a += i + " "
+        else:
+            a += os.linesep + " " + i
+
+    return a
