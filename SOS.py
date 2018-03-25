@@ -3,83 +3,60 @@ import hashlib
 import random
 from DatabaseHandler import *
 import contact
+import json
 
-from time import time
+import datetime
 
 
 app = Flask(__name__)
 db = DBH()
 
-@app.route('schema.sql', methods = ['GET'])
-@app.route('login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         loginrequest = db.login(request.form['username'],request.form['password'])
         token = hashlib.md5(str(random.random()).encode('utf-8')).hexdigest()
-        db.setauthtoken(loginrequest.ID, token)
         if loginrequest.success:
-            return Flask.jsonify( {"success": 1, "error": None, "userid": loginrequest.ID, "userType": loginrequest.type, "realName": loginrequest.name, "token": token})
+            db.setauthtoken(loginrequest.userID, token)
+            return json.dumps( {"success": 1, "error": None, "userid": loginrequest.userID, "userType": loginrequest.userType, "realName": loginrequest.realName, "token": token})
         else:
-            return Flask.jsonify(
+            return json.dumps(
                 {"success": 0, "error": "Invalid Username or Password", "userID": -1, "userType": -1})
-@app.route('logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
         db.logout(request.form['userid'])
+    return ""
 
-@app.route('getinfo')
+@app.route('/getinfo', methods=['GET', 'POST'])
 def getinfo():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
-        if request.form['infoforuserid'] != request.form['userid']:
-            assert db.cangetinfo(request.form['userid'], request.form['infoforuserid'])
         usermodel = db.getUserData(request.form['userid'])
-        return Flask.jsonify(usermodel)
-
-@app.route('addappointment')
-def addappointment():
-    if request.method == 'POST':
-        assert db.confirmtoken(request.form['userid'], request.form['token'])
-        assert db.getUserType(request.form['userid']) == 1
-        db.insertAppointment(request.form['appointmentid'], request.form['patientid'], request.form['doctorid'],
-                             request.form['date'], request.form['type'], request.form['reason'], request.form['results'],
-                             request.form['extradetails'], request.form['privatenotes'])
-
-@app.route('addtest')
-def addtest():
-    if request.method == 'POST':
-        assert db.confirmtoken(request.form['userid'], request.form['token'])
-        db.insertTest(request.form['testid'], request.form['doctorid'], request.form['patientid'], request.form['type'],
-                      request.form['date'], request.form['result'], request.form['privatenotes'], request.form['appid'])
+        return usermodel.toJSON()
 
 
-@app.route('addmedication')
+@app.route('/addmedication', methods=['GET', 'POST'])
 def addmedication():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
         db.insertMedication(request.form['medid'], request.form['userid'], request.form['medtype'], request.form['dosage'],
                             request.form['dosageunits'], request.form['frequency'], request.form['frequencyunit'])
-
-@app.route('adddoctorshare')
-def adddoctorshare():
-    if request.method == 'POST':
-        assert db.confirmtoken(request.form['userid'], request.form['token'])
-        db.insertDoctor(request.form['userid'], request.form['useremail'], request.form['userpassword_salt'],
-                            request.form['userpasssword_hash'], 1, None, None,
-                            None, None, request.form['doctortype'])
+    return ""
 
 
-@app.route('logemergency')
+@app.route('/logemergency', methods=['GET', 'POST'])
 def logemergency():
     if request.method == 'POST':
         assert db.confirmtoken(request.form['userid'], request.form['token'])
         userid = request.form['userid']
-        t = time()
+        t = datetime.datetime.today()
         latitude = request.form['latitude']
         longitude = request.form['longitude']
         db.insertEmergency(userid, t, latitude, longitude)
-        contact.sendMessage(toStr(getinfo()))
+        contact.sendMessage(str(db.getUserData(request.form['userid'])))
+    return ""
 
 '''
 @app.route('arriveemergency')
@@ -94,5 +71,3 @@ if __name__ == '__main__':
     app.run()
 
 #for json info that is prodiced by getInfo()
-def toStr(s):
-    str(s)

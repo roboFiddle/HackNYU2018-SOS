@@ -10,38 +10,21 @@ class User(object):
     syst = systole bp, dias = diastole bp
     emgCont = emergency Contact, emgContNum = phone number of emg contact
     '''
-    def __init__(self, id, n, ty, em, birth, h, w, al, bloTy, medCond, gen, syst, dias, emgCont, emgContNum):
+    def __init__(self, id, n, em, birth, h, w, al, bloTy, medCond, gen):
         self.ID = id
         self.Name = n
-        self.UsrType = ty
         self.Email = em
-        self.Birthdate = birth
+        self.age = birth
         self.Height = h
         self.Weight = w
-        self.Allergies = al
-        self.BloodType = bloTy
-        self.MedicalConditions = medCond
         self.Gender = gen
-        self.Systole = syst
-        self.Diastole = dias
-        self.EmergencyContact = emgCont
-        self.EmergencyContactPhone = emgContNum
+        self.BloodType = bloTy
+        self.MedicalConditions =  al
+        self.Allergies = medCond
 
-        #list of Ids
-        self.appointments = []
-        #list of medication objs , empty for doctor or authority
-        self.medications = []
-
-    # App is int ID for appointment that will be added to list of appointments
-    def addAppointment(self, App):
-        self.appointments.append(App)
-    # Med is medication objects
-    def addMed(self, Med):
-        self.medications.append(Med)
-    def calcAge(birthdate):
+    def calcAge(self,birthdate):
         today = date.today()
         return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
-
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
