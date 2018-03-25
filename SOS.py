@@ -56,8 +56,13 @@ def logemergency():
         latitude = request.form['latitude']
         longitude = request.form['longitude']
         db.insertEmergency(userid, t, latitude, longitude)
+<<<<<<< HEAD
         contact.sendMessage(jsonToStr(str(db.getUserData(request.form['userid']))))
     return ""
+=======
+        contact.sendMessage(str(db.getUserData(request.form['userid'])))
+    return "hi"
+>>>>>>> 47768eaa61e386e9f7b51549661f1a2eed879241
 
 '''
 @app.route('arriveemergency')
